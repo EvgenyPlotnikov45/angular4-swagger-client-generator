@@ -5,9 +5,9 @@ export {
   {{name}},
 {{/enums}}
   {{name}}
-} from './models/{{#lower}}{{name}}{{/lower}}.model';
+} from './models/{{name}}';
 {{/hasEnums}}
 {{^hasEnums}}
-export { {{name}} } from './models/{{#lower}}{{name}}{{/lower}}.model';
+export { {{name}} } from './models/{{name}}';
 {{/hasEnums}}
 {{/definitions}}

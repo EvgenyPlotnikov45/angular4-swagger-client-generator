@@ -1,6 +1,7 @@
-import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Inject, Injectable, Optional } from "@angular/core";
+import { HttpHeaders, HttpParams } from "@angular/common/http";
+import { DataContextService } from "./data-context.service";
+import { Observable } from "rxjs";
 
 import {
 {{#definitions}}
@@ -25,15 +26,9 @@ export enum {{name}} {
 * Created with angular4-swagger-client-generator.
 */
 @Injectable()
-export class ApiClientService {
+export class PassportApiService {
 
-  private domain = '{{&domain}}';
-
-  constructor(private http: HttpClient, @Optional() @Inject('domain') domain: string ) {
-    if (domain) {
-      this.domain = domain;
-    }
-  }
+  constructor(private dataContext: DataContextService) {}
 
 {{#methods}}
   /**
@@ -44,9 +39,9 @@ export class ApiClientService {
   {{#parameters}}
   {{^isSingleton}}* @param {{&camelCaseName}} {{&description}}{{/isSingleton}}
   {{/parameters}}
-  * @return Full HTTP response as Observable
+  * @return http response as Promise
   */
-  public {{&methodName}}({{#parameters}}{{&camelCaseName}}: {{typescriptType}}{{^isLast}}, {{/isLast}}{{/parameters}}): Observable<HttpResponse<{{&response}}>> {
+  public {{&methodName}}({{#parameters}}{{&camelCaseName}}: {{typescriptType}}{{^isLast}}, {{/isLast}}{{/parameters}}): Promise<any> {
     let uri = `{{&backTickPath}}`;
     let headers = new HttpHeaders();
     let params = new HttpParams();
@@ -99,18 +94,18 @@ export class ApiClientService {
   }
 
 {{/methods}}
-  private sendRequest<T>(method: string, uri: string, headers: HttpHeaders, params: HttpParams, body: any): Observable<HttpResponse<T>> {
-    if (method === 'get') {
-      return this.http.get<T>(this.domain + uri, { headers: headers.set('Accept', 'application/json'), params: params, observe: 'response' });
-    } else if (method === 'put') {
-      return this.http.put<T>(this.domain + uri, body, { headers: headers.set('Content-Type', 'application/json'), params: params, observe: 'response' });
-    } else if (method === 'post') {
-      return this.http.post<T>(this.domain + uri, body, { headers: headers.set('Content-Type', 'application/json'), params: params, observe: 'response' });
-    } else if (method === 'delete') {
-      return this.http.delete<T>(this.domain + uri, { headers: headers, params: params, observe: 'response' });
-    } else {
-      console.error('Unsupported request: ' + method);
-      return Observable.throw('Unsupported request: ' + method);
-    }
+  private sendRequest<T>(method: string, uri: string, headers: HttpHeaders, params: HttpParams, body: any): Promise<T> {
+        if (method === 'get') {
+          return this.dataContext.get<T>(uri, { headers, params: params }, true);
+        } else if (method === 'put') {
+          return this.dataContext.put<T>(uri, body, { headers, params: params }, true);
+        } else if (method === 'post') {
+          return this.dataContext.post<T>(uri, body, { headers: headers, params: params }, true);
+        } else if (method === 'delete') {
+          return this.dataContext.delete<T>(uri, { headers: headers, params: params }, true);
+        } else {
+          console.error('Unsupported request: ' + method);
+          return Observable.throw('Unsupported request: ' + method);
+        }
   }
 }

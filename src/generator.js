@@ -55,7 +55,7 @@ var Generator = (function () {
         this.LogMessage('Rendering template for API');
         var result = this.renderLintAndBeautify(this.templates.class, this.viewModel, this.templates);
 
-        var outfile = this._outputPath + '/' + 'index.ts';
+        var outfile = this._outputPath + '/' + 'passport-api.service.ts';
         this.LogMessage('Creating output file', outfile);
         fs.writeFileSync(outfile, result, 'utf-8')
     };
@@ -79,7 +79,7 @@ var Generator = (function () {
             that.LogMessage('Rendering template for model ', definition.name);
             var result = that.renderLintAndBeautify(that.templates.model, definition, that.templates);
 
-            var outfile = outputdir + '/' + definition.name.toLowerCase() + '.model.ts';
+            var outfile = outputdir + '/' + definition.name + '.ts';
 
             that.LogMessage('Creating output file', outfile);
             fs.writeFileSync(outfile, result, 'utf-8')
@@ -100,7 +100,7 @@ var Generator = (function () {
         this.LogMessage('Rendering common models export');
         var result = this.renderLintAndBeautify(this.templates.models_export, this.viewModel, this.templates);
 
-        var outfile = outputdir + '/models.ts';
+        var outfile = outputdir + '/index.ts';
 
         this.LogMessage('Creating output file', outfile);
         fs.writeFileSync(outfile, result, 'utf-8')
