@@ -145,10 +145,19 @@ var Generator = (function () {
                     summaryLines.splice(summaryLines.length - 1, 1);
                 }
 
+                var methodName;
+                if (op['x-swagger-js-method-name']) {
+                    methodName = op['x-swagger-js-method-name'];
+                } else if (op.operationId) {
+                    methodName = that.getOperatorIdToMethodName(op.operationId);
+                } else {
+                    methodName = that.getPathToMethodName(m, path);
+                }
+
                 var method = {
                     path: path,
                     backTickPath: path.replace(/(\{.*?\})/g, '$$$1'),
-                    methodName: op['x-swagger-js-method-name'] ? op['x-swagger-js-method-name'] : (op.operationId ? op.operationId : that.getPathToMethodName(m, path)),
+                    methodName: methodName,
                     method: m.toUpperCase(),
                     angular2httpMethod: m.toLowerCase(),
                     isGET: m.toUpperCase() === 'GET',
@@ -338,6 +347,10 @@ var Generator = (function () {
     Generator.prototype.getRefType = function (refString) {
         var segments = refString.split('/');
         return segments.length === 3 ? segments[2] : segments[0];
+    };
+
+    Generator.prototype.getOperatorIdToMethodName = function (str) {
+        return str[0].toLowerCase() + str.substr(1, str.length);
     };
 
     Generator.prototype.getPathToMethodName = function (m, path) {
