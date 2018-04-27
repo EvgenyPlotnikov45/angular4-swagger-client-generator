@@ -12,12 +12,12 @@ import {
 {{/hasEnums}}
   {{name}}{{^isLast}},{{/isLast}}
 {{/definitions}}
-} from '../models/';
+} from "../models";
 
 {{#enums}}
 export enum {{name}} {
   {{#values}}
-  {{#upper}}{{value}}{{/upper}} = '{{value}}'{{^isLast}},{{/isLast}}
+  {{#upper}}{{value}}{{/upper}} = "{{value}}"{{^isLast}},{{/isLast}}
   {{/values}}
 }
 
@@ -42,19 +42,19 @@ export class PassportApiService {
   * @return http response as Promise
   */
   public {{&methodName}}({{#parameters}}{{&camelCaseName}}: {{typescriptType}}{{^isLast}}, {{/isLast}}{{/parameters}}): Promise<any> {
-    let uri = `{{&backTickPath}}`;
-    let headers = new HttpHeaders();
-    let params = new HttpParams();
+    const uri = `{{&backTickPath}}`;
+    const headers = new HttpHeaders();
+    const params = new HttpParams();
     {{#parameters}}
       {{#isQueryParameter}}
         {{#isSingleton}}
-    params = params.set('{{&name}}', '{{&singleton}}' + '');
+    params.set("{{&name}}", "{{&singleton}}" + "");
         {{/isSingleton}}
         {{^isSingleton}}
           {{#isPatternType}}
     Object.keys(parameters).forEach(function(parameterName) {
-      if (new RegExp('{{&pattern}}').test(parameterName)) {
-        params = params.set(parameterName, parameters[parameterName] + '');
+      if (new RegExp("{{&pattern}}").test(parameterName)) {
+        params.set(parameterName, parameters[parameterName] + "");
       }
     });
           {{/isPatternType}}
@@ -62,11 +62,11 @@ export class PassportApiService {
     if ({{&camelCaseName}} !== undefined && {{&camelCaseName}} !== null) {
           {{#isArray}}
       Object.keys({{&camelCaseName}}).map(value => {
-        params = params.set('{{&name}}', value + '');
+        params.set("{{&name}}", value + "");
       });
           {{/isArray}}
           {{^isArray}}
-      params = params.set('{{&name}}', {{&camelCaseName}} + '');
+      params.set("{{&name}}", {{&camelCaseName}} + "");
           {{/isArray}}
     }
           {{/isPatternType}}
@@ -74,38 +74,35 @@ export class PassportApiService {
       {{/isQueryParameter}}
       {{#isHeaderParameter}}
         {{#isSingleton}}
-    headers = headers.set('{{&name}}', '{{&singleton}}' + '');
+    headers.set("{{&name}}", "{{&singleton}}" + "");
         {{/isSingleton}}
         {{^isSingleton}}
     if ({{&camelCaseName}} !== undefined && {{&camelCaseName}} !== null) {
           {{#isArray}}
       Object.keys({{&camelCaseName}}).map(value => {
-        headers = headers.set('{{&name}}', value + '');
+        headers.set("{{&name}}", value + "");
       });
           {{/isArray}}
           {{^isArray}}
-      headers = headers.set('{{&name}}', {{&camelCaseName}} + '');
+      headers.set("{{&name}}", {{&camelCaseName}} + "");
           {{/isArray}}
     }
         {{/isSingleton}}
       {{/isHeaderParameter}}
     {{/parameters}}
-    return this.sendRequest<{{&response}}>('{{angular2httpMethod}}', uri, headers, params, {{#hasBodyParameters}}JSON.stringify({{#parameters}}{{#isBodyParameter}}{{&camelCaseName}}{{/isBodyParameter}}{{/parameters}}){{/hasBodyParameters}}{{^hasBodyParameters}}null{{/hasBodyParameters}});
+    return this.sendRequest<{{&response}}>("{{angular2httpMethod}}", uri, headers, params, {{#hasBodyParameters}}{{#parameters}}{{#isBodyParameter}}{{&camelCaseName}}{{/isBodyParameter}}{{/parameters}}{{/hasBodyParameters}}{{^hasBodyParameters}}null{{/hasBodyParameters}});
   }
 
 {{/methods}}
   private sendRequest<T>(method: string, uri: string, headers: HttpHeaders, params: HttpParams, body: any): Promise<T> {
-        if (method === 'get') {
+        if (method === "get") {
           return this.dataContext.get<T>(uri, { headers, params: params }, true);
-        } else if (method === 'put') {
+        } else if (method === "put") {
           return this.dataContext.put<T>(uri, body, { headers, params: params }, true);
-        } else if (method === 'post') {
+        } else if (method === "post") {
           return this.dataContext.post<T>(uri, body, { headers: headers, params: params }, true);
-        } else if (method === 'delete') {
+        } else if (method === "delete") {
           return this.dataContext.delete<T>(uri, { headers: headers, params: params }, true);
-        } else {
-          console.error('Unsupported request: ' + method);
-          return Observable.throw('Unsupported request: ' + method);
         }
   }
 }

@@ -1,11 +1,11 @@
 {{#imports}}
-import { {{.}} } from './{{.}}';
+import { {{.}} } from "./{{.}}";
 {{/imports}}
 
 {{#enums}}
 export enum {{name}} {
   {{#values}}
-  {{#upper}}{{value}}{{/upper}} = '{{value}}'{{^isLast}},{{/isLast}}
+  {{#upper}}{{value}}{{/upper}} = "{{value}}"{{^isLast}},{{/isLast}}
   {{/values}}
 }
 

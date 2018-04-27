@@ -350,7 +350,23 @@ var Generator = (function () {
     };
 
     Generator.prototype.getOperatorIdToMethodName = function (str) {
-        return str[0].toLowerCase() + str.substr(1, str.length);
+        var methodName = '';
+        var name = str[0].toLowerCase() + str.substr(1, str.length);
+        var arrNames = name.split('_');
+        if (arrNames.length >= 2) {
+            for(var i = 0; i < arrNames.length; i++) {
+                var strSplit = arrNames[i];
+                if (i) {
+                    methodName += strSplit[0].toUpperCase() + strSplit.substr(1, strSplit.length);
+                } else {
+                    methodName += strSplit;
+                }
+            }
+        } else {
+            methodName = name;
+        }
+
+        return methodName;
     };
 
     Generator.prototype.getPathToMethodName = function (m, path) {
