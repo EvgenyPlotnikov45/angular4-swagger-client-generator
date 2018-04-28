@@ -43,18 +43,18 @@ export class PassportApiService {
   */
   public {{&methodName}}({{#parameters}}{{&camelCaseName}}: {{typescriptType}}{{^isLast}}, {{/isLast}}{{/parameters}}): Promise<any> {
     const uri = `{{&backTickPath}}`;
-    const headers = new HttpHeaders();
-    const params = new HttpParams();
+    let headers = new HttpHeaders();
+    let params = new HttpParams();
     {{#parameters}}
       {{#isQueryParameter}}
         {{#isSingleton}}
-    params.set("{{&name}}", "{{&singleton}}" + "");
+    params = params.set("{{&name}}", "{{&singleton}}" + "");
         {{/isSingleton}}
         {{^isSingleton}}
           {{#isPatternType}}
     Object.keys(parameters).forEach(function(parameterName) {
       if (new RegExp("{{&pattern}}").test(parameterName)) {
-        params.set(parameterName, parameters[parameterName] + "");
+        params = params.set(parameterName, parameters[parameterName] + "");
       }
     });
           {{/isPatternType}}
@@ -62,11 +62,11 @@ export class PassportApiService {
     if ({{&camelCaseName}} !== undefined && {{&camelCaseName}} !== null) {
           {{#isArray}}
       Object.keys({{&camelCaseName}}).map(value => {
-        params.set("{{&name}}", value + "");
+        params = params.set("{{&name}}", value + "");
       });
           {{/isArray}}
           {{^isArray}}
-      params.set("{{&name}}", {{&camelCaseName}} + "");
+        params = params.set("{{&name}}", {{&camelCaseName}} + "");
           {{/isArray}}
     }
           {{/isPatternType}}
@@ -74,17 +74,17 @@ export class PassportApiService {
       {{/isQueryParameter}}
       {{#isHeaderParameter}}
         {{#isSingleton}}
-    headers.set("{{&name}}", "{{&singleton}}" + "");
+    headers = headers.set("{{&name}}", "{{&singleton}}" + "");
         {{/isSingleton}}
         {{^isSingleton}}
     if ({{&camelCaseName}} !== undefined && {{&camelCaseName}} !== null) {
           {{#isArray}}
       Object.keys({{&camelCaseName}}).map(value => {
-        headers.set("{{&name}}", value + "");
+        headers = headers.set("{{&name}}", value + "");
       });
           {{/isArray}}
           {{^isArray}}
-      headers.set("{{&name}}", {{&camelCaseName}} + "");
+      headers = headers.set("{{&name}}", {{&camelCaseName}} + "");
           {{/isArray}}
     }
         {{/isSingleton}}
